@@ -6,9 +6,6 @@
     class TokenResponse
     {
         #region Properties
-        //[PrimaryKey, AutoIncrement]
-        //public int TokenResponseId { get; set; }
-
         [JsonProperty(PropertyName = "acces_token")]
         public string AccesToken { get; set; }
 
@@ -29,23 +26,6 @@
 
         [JsonProperty(PropertyName = "error_description")]
         public string Error_description { get; set; }
-
-        /*public bool IsRemembered
-        {
-            get; set;
-        }
-
-        public String Password
-        {
-            get; set;
-        }*/
         #endregion
-/*
-        #region Methods
-        public override int GetHashCode()
-        {
-            return TokenResponseId;
-        }
-        #endregion*/
     }
 }

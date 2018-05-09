@@ -8,7 +8,7 @@
     using Newtonsoft.Json;
     using Plugin.Connectivity;
 
-    public class ApiService
+    public class ApiService //COMUNICACION CON LOS APIS
     {
         public async Task<Response>CheckConnection()
         {
@@ -21,8 +21,7 @@
                 };
             }
 
-            var isReachable = await CrossConnectivity.Current.IsRemoteReachable(
-            	"google.com");
+            var isReachable = await CrossConnectivity.Current.IsRemoteReachable("google.com");
             if (!isReachable)
             {
             	return new Response
@@ -39,6 +38,43 @@
             };
         }
 
+        //CONSUMIR A APIS SIN TOKEN
+        public async Task<Response> GetList<T>(string urlBase, string servicePrefix, string controller)
+        {
+            try
+            {
+                var client = new HttpClient();
+                client.BaseAddress = new Uri(urlBase);
+                var url = string.Format("{0}{1}", servicePrefix, controller); //ARMA LA URL
+                var response = await client.GetAsync(url); //EJECUTA LA CONSULTA
+                var result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)// SINO LLEGA 200 O RESPUESTA CORRECTA
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = result,
+                    };
+                }
+                var List = JsonConvert.DeserializeObject<List<T>>(result);
+                return new Response
+                {
+                    IsSuccess = true,
+                    Message = "Ok",
+                    Result = List,
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                };
+            }
+        }
         //CONSUMIR DE FORMA SEGURA
         /*
         public async Task<TokenResponse> GetToken(
@@ -210,46 +246,8 @@
                 };
             }
         }*/
-    
-            public async Task<Response> GetList<T>(
-            string urlBase,
-            string servicePrefix,
-            string controller)
-        {
-            try
-            {
-                var client = new HttpClient();
-                client.BaseAddress = new Uri(urlBase);
-                var url = string.Format("{0}{1}", servicePrefix, controller); //ARMA LA URL
-                var response = await client.GetAsync(url); //EJECUTA LA CONSULTA
-                var result = await response.Content.ReadAsStringAsync();
 
-                if (!response.IsSuccessStatusCode)// SINO LLEGA 200 O RESPUESTA CORRECTA
-                {
-                    return new Response
-                    {
-                        IsSuccess = false,
-                        Message = result,
-                    };
-                }
-                var List = JsonConvert.DeserializeObject<List<T>>(result);
-                return new Response
-                {
-                    IsSuccess = true,
-                    Message = "Ok",
-                    Result = List,
-                };
 
-            }
-            catch (Exception ex)
-            {
-                return new Response
-                {
-                    IsSuccess = false,
-                    Message = ex.Message,
-                };
-            }
-        }
         /*
         public async Task<Response> GetList<T>(
             string urlBase,
@@ -301,55 +299,55 @@
             }
         }*/
 
-            /*
-        public async Task<Response> Post<T>(
-            string urlBase,
-            string servicePrefix,
-            string controller,
-            string tokenType,
-            string accesToken,
-            T model)
+        /*
+    public async Task<Response> Post<T>(
+        string urlBase,
+        string servicePrefix,
+        string controller,
+        string tokenType,
+        string accesToken,
+        T model)
+    {
+        try
         {
-            try
+            var request = JsonConvert.SerializeObject(model);
+            var content = new StringContent(
+                request, Encoding.UTF8,
+                "application/json");
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue(tokenType, accesToken);
+            client.BaseAddress = new Uri(urlBase);
+            var url = string.Format("{0}{1}", servicePrefix, controller);
+            var response = await client.PostAsync(url, content);
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
             {
-                var request = JsonConvert.SerializeObject(model);
-                var content = new StringContent(
-                    request, Encoding.UTF8,
-                    "application/json");
-                var client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue(tokenType, accesToken);
-                client.BaseAddress = new Uri(urlBase);
-                var url = string.Format("{0}{1}", servicePrefix, controller);
-                var response = await client.PostAsync(url, content);
-                var result = await response.Content.ReadAsStringAsync();
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    var error = JsonConvert.DeserializeObject<Response>(result);
-                    error.IsSuccess = false,
-                    return error;
-                }
-
-                var newRecord = JsonConvert.DeserializeObject<T>(result);
-
-                return new Response
-                {
-                    IsSuccess = true,
-                    Message = "Record added OK.",
-                    Result = newRecord,
-                };
-
+                var error = JsonConvert.DeserializeObject<Response>(result);
+                error.IsSuccess = false,
+                return error;
             }
-            catch (Exception ex)
+
+            var newRecord = JsonConvert.DeserializeObject<T>(result);
+
+            return new Response
             {
-                return new Response
-                {
-                    IsSuccess = false,
-                    Message = ex.Message,
-                };
-            }
-        }*/
+                IsSuccess = true,
+                Message = "Record added OK.",
+                Result = newRecord,
+            };
+
+        }
+        catch (Exception ex)
+        {
+            return new Response
+            {
+                IsSuccess = false,
+                Message = ex.Message,
+            };
+        }
+    }*/
 
         /*
         public async Task<Response> GetList<T>(string urlBase, string controller)

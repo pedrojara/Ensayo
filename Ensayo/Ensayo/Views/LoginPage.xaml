@@ -23,6 +23,7 @@
                 <Entry  IsPassword="true"
                         Placeholder="Contraseña"
                         Text="{Binding Contrasena, Mode=TwoWay}"/>
+                
                 <ActivityIndicator  IsRunning ="{Binding IsRunning, Mode=TwoWay}"
                                     VerticalOptions="CenterAndExpand">
                 </ActivityIndicator>

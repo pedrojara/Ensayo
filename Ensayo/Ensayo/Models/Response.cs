@@ -1,6 +1,6 @@
 ﻿namespace Ensayo.Models
 {
-    public class Response
+    public class Response //RESPUESTA QUE DAN LOS SERVICIOS
     {
         public bool IsSuccess//Para traer la lista, si la trae devuelve true y va a Result, si es false va a Message
         {

@@ -3,6 +3,7 @@
     using System.Windows.Input;
     using Xamarin.Forms;
     using GalaSoft.MvvmLight.Command;
+    using Ensayo.Views;
 
     class LoginViewModel : BaseViewModel
     {
@@ -17,6 +18,7 @@
 
 
         #region Properties
+        //REFRESQUE LA VISTA
         public string Nid
         {
             get
@@ -39,7 +41,7 @@
                 SetValue(ref this.contrasena, value);
             }
         }
-        public bool IsRunning
+        public bool IsRunning //ActivityIndicator
         {
             get
             {
@@ -50,7 +52,7 @@
                 SetValue(ref this.isRunning, value);
             }
         }
-        public bool IsEnabled
+        public bool IsEnabled //HABILITAR LOS BOTONES
         {
             get
             {
@@ -61,7 +63,6 @@
                 SetValue(ref this.isEnabled, value);
             }
         }
-       
         #endregion
 
 
@@ -69,13 +70,12 @@
         #region Constructors
         public LoginViewModel()
         {
-            this.IsEnabled = true;
-            //http://restcountries.eu/rest/v2/all
+            this.IsEnabled = true; //INICIALIZAR SE MUESTRA ACTIVO EL BOTON
         }
 
         public async void Login()
         {
-            if (string.IsNullOrEmpty(this.Nid))
+            if (string.IsNullOrEmpty(this.Nid))//SE VALIDA SI EL USUARIO DIGITO EL NID
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Debe ingresar el Número de Documento", "Aceptar");
                 return;
@@ -89,7 +89,6 @@
             this.IsRunning = true;
             this.IsEnabled = false;
 
-            /*
             if (this.Nid != "123456" || this.Contrasena != "1111")
             {
                 this.IsRunning = false;
@@ -100,32 +99,36 @@
             }
             else
             {
-                this.IsRunning = true;
-                this.IsEnabled = false;
-                await Application.Current.MainPage.DisplayAlert("Información", "Desea Continuar?", "Cancelar", "Aceptar");
+                this.IsRunning = false;
+                this.IsEnabled = true;
+                this.Nid = string.Empty;
+                this.Contrasena = string.Empty;
+                
+                // await Application.Current.MainPage.DisplayAlert("Información", "Desea Continuar?", "Cancelar", "Aceptar");
+                var action = await Application.Current.MainPage.DisplayAlert("Información", "Desea Continuar?", "Aceptar", "Cancelar");
+
+                if (action)
+                {
+                    this.Nid = string.Empty;
+                    this.Contrasena = string.Empty;
+                    MainViewModel.GetInstance().Lands = new LandsViewModel();//SE INSTANCIA LA VIEWMODEL DE LA PAGE POR PATRON SINGLETON PARA NO INSTANCIAR MAS
+                    await Application.Current.MainPage.Navigation.PushAsync(new LandsPage());//SE APILA PARA NAVEGAR
+                }
                 return;
-            }*/
-
-            this.Nid = string.Empty;
-            this.Contrasena = string.Empty;
-
-            MainViewModel.GetInstance().Lands = new LandsViewModel();
-            //SE APILA PARA NAVEGAR
-            //await Application.Current.MainPage.Navigation.PushAsync(new LandsPage1());
-
+            }
         }
         #endregion
 
 
         #region Commands
+        //ACCION DE LOS BOTONES
         public ICommand IngresarCommand
         {
             get
             {
-                return new RelayCommand(Login);
+                return new RelayCommand(Login);//CUANDO SE HAGA TAP VA A EL METODO ASYNC LOGIN
             }
         }
-
 
         public ICommand ResgistrarmeCommand
         {

@@ -9,7 +9,7 @@
             set;
         }
 
-        public LandsViewModel Lands
+        public LandsViewModel Lands //OBJETO PARA BINDING DESDE XAML
         {
             get;
             set;
@@ -24,11 +24,11 @@
         }
         #endregion
 
-        //Hace un llamado de la MainViewModel desde cualquier clase, sin necesidad de tener que instanciar otra
+        //Permite hacer un llamado de la MainViewModel desde cualquier clase, sin necesidad de tener que instanciar otra
         #region Singleton 
         private static MainViewModel instance;
 
-        public static MainViewModel GetInstance()
+        public static MainViewModel GetInstance()//PARA QUE DEVUELVA UNA INSTANCIA
         {
             if (instance == null)
             {

@@ -11,7 +11,7 @@
     class LandsViewModel : BaseViewModel
     {
         #region Attributes
-        private ObservableCollection<RootObject> lands;
+        private ObservableCollection<RootObject> lands; //LISTA DE OBJETOS OBSERVAC PARA QUE SE REFRESQUE LISTVIEW DE MODELS
         private bool isRefreshing;
         #endregion
 
@@ -38,7 +38,7 @@
         public LandsViewModel()
         {
             this.apiservice = new ApiService();
-            this.LoadLands();
+            this.LoadLands();//INICIAR METODO LOADLANDS
         }
         #endregion
 
@@ -52,24 +52,22 @@
             {
                 this.IsRefreshing = false;
                 await Application.Current.MainPage.DisplayAlert("Error", conection.Message, "Aceptar");
-                await Application.Current.MainPage.Navigation.PopAsync();
+                await Application.Current.MainPage.Navigation.PopAsync();//DESAPILAR LA NAVEGACION, FLECHA DE PARA ATRAS, DEVOLVER
                 return;
             }
 
             //CONSUME API
-            var response = await this.apiservice.GetList<RootObject>(
-                "http://restcountries.eu", 
-                "/rest", 
-                "/v2/all");
+            var response = await this.apiservice.GetList<RootObject>("http://restcountries.eu", "/rest", "/v2/all");
             if (!response.IsSuccess)
             {
                 this.IsRefreshing = false;
                 await Application.Current.MainPage.DisplayAlert("Error", response.Message, "Aceptar");
+                await Application.Current.MainPage.Navigation.PopAsync();//DESAPILAR LA NAVEGACION, FLECHA DE PARA ATRAS, DEVOLVER
                 return;
             }
 
             var list = (List<RootObject>) response.Result;
-            this.Lands = new ObservableCollection<RootObject>(list);
+            this.Lands = new ObservableCollection<RootObject>(list);//OBJETO EN MEMORIA
             this.IsRefreshing = false;
         }
         #endregion
