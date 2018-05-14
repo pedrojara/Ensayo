@@ -7,21 +7,31 @@
     using Xamarin.Forms;
     using System.Windows.Input;
     using GalaSoft.MvvmLight.Command;
+    using System;
+    using System.Linq;
 
     class LandsViewModel : BaseViewModel
     {
         #region Attributes
         private ObservableCollection<RootObject> lands; //LISTA DE OBJETOS OBSERVAC PARA QUE SE REFRESQUE LISTVIEW DE MODELS
         private bool isRefreshing;
+        private string filter;
+        private List<RootObject> landslist;
         #endregion
 
         #region Properties
         public ObservableCollection<RootObject> Lands
         {
-            get { return this.lands; }
-            set { SetValue(ref this.lands, value); }
+            get
+            {
+                return this.lands;
+            }
+            set
+            {
+                SetValue(ref this.lands, value);
+            }
         }
-        public bool IsRefreshing
+        public bool IsRefreshing //CUANDO LA APLICACION ESTE CARGANDO, PARA CARGAR LA LISTA
         {
             get
             {
@@ -32,6 +42,19 @@
                 SetValue(ref this.isRefreshing, value);
             }
         }
+        public string Filter //CUANDO LA APLICACION ESTE CARGANDO, PARA CARGAR LA LISTA
+        {
+            get
+            {
+                return this.filter;
+            }
+            set
+            {
+                SetValue(ref this.filter, value);
+                this.Search(); //FILTRO QUE BUSQUE DIRECTAMENTE SE DIGITE ALGO
+            }
+        }
+   
         #endregion
 
         #region Constructors
@@ -66,8 +89,8 @@
                 return;
             }
 
-            var list = (List<RootObject>) response.Result;
-            this.Lands = new ObservableCollection<RootObject>(list);//OBJETO EN MEMORIA
+            this.landslist = (List<RootObject>) response.Result;
+            this.Lands = new ObservableCollection<RootObject>(this.landslist);//OBJETO EN MEMORIA
             this.IsRefreshing = false;
         }
         #endregion
@@ -81,7 +104,29 @@
         {
             get
             {
-                return new RelayCommand(LoadLands);
+                return new RelayCommand(LoadLands);//CUANDO SE HAGA TAP VA A EL METODO ASYNC LoadLands
+            }
+        }
+        public ICommand SearchCommand //CUANDO LA APLICACION ESTE CARGANDO, PARA CARGAR LA LISTA
+        {
+            get
+            {
+                return new RelayCommand(Search);//CUANDO SE HAGA TAP VA A EL METODO ASYNC LoadLands
+            }
+        }
+
+        private void Search()
+        {
+            if(string.IsNullOrEmpty(this.Filter))
+            {
+                this.Lands = new ObservableCollection<RootObject>(this.landslist);//OBJETO EN MEMORIA
+            }
+            else
+            {
+                this.Lands = new ObservableCollection<RootObject>(this.landslist.Where(
+                    l => l.Name.ToLower().Contains(this.Filter.ToLower()) ||
+                         l.Capital.ToLower().Contains(this.Filter.ToLower())
+                ));//para busqueda LINQ
             }
         }
         #endregion
