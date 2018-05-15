@@ -1,8 +1,9 @@
 ﻿namespace Ensayo.Models
 {
-    using Newtonsoft.Json;
     using System.Collections.Generic;
-    class RootObject
+    using Newtonsoft.Json;
+    
+    public class RootObject
     {
         [JsonProperty(PropertyName = "name")]//Esta mapeo como esta en java
         public string Name { get; set; }
@@ -75,5 +76,7 @@
 
         [JsonProperty(PropertyName = "cioc")]
         public string Cioc { get; set; }
+
+
     }
 }

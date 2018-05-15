@@ -13,14 +13,14 @@
     class LandsViewModel : BaseViewModel
     {
         #region Attributes
-        private ObservableCollection<RootObject> lands; //LISTA DE OBJETOS OBSERVAC PARA QUE SE REFRESQUE LISTVIEW DE MODELS
+        private ObservableCollection<RootObjectItemViewModel> lands; //LISTA DE OBJETOS OBSERVAC PARA QUE SE REFRESQUE LISTVIEW DE MODELS
         private bool isRefreshing;
         private string filter;
         private List<RootObject> landslist;
         #endregion
 
         #region Properties
-        public ObservableCollection<RootObject> Lands
+        public ObservableCollection<RootObjectItemViewModel> Lands
         {
             get
             {
@@ -90,8 +90,39 @@
             }
 
             this.landslist = (List<RootObject>) response.Result;
-            this.Lands = new ObservableCollection<RootObject>(this.landslist);//OBJETO EN MEMORIA
+            this.Lands = new ObservableCollection<RootObjectItemViewModel>(this.ToRootObjectItemViewModel());//OBJETO EN MEMORIA
             this.IsRefreshing = false;
+        }
+
+        private IEnumerable<RootObjectItemViewModel> ToRootObjectItemViewModel()
+        {
+            return this.landslist.Select(l => new RootObjectItemViewModel
+            {
+                Alpha2Code = l.Alpha2Code,
+                Alpha3Code = l.Alpha3Code,
+                AltSpellings = l.AltSpellings,
+                Area = l.Area,
+                Borders = l.Borders,
+                CallingCodes = l.CallingCodes,
+                Capital = l.Capital,
+                Cioc = l.Cioc,
+                Currencies = l.Currencies,
+                Demonym = l.Demonym,
+                Flag = l.Flag,
+                Gini = l.Gini,
+                Languages = l.Languages,
+                Latlng = l.Latlng,
+                Name = l.Name,
+                NativeName = l.NativeName,
+                NumericCode = l.NumericCode,
+                Population = l.Population,
+                Region = l.Region,
+                RegionalBlocs = l.RegionalBlocs,
+                Subregion = l.Subregion,
+                Timezones = l.Timezones,
+                //TopLevelDomain = l.TopLevelDomain,
+                Translations = l.Translations,
+            });
         }
         #endregion
 
@@ -119,11 +150,11 @@
         {
             if(string.IsNullOrEmpty(this.Filter))
             {
-                this.Lands = new ObservableCollection<RootObject>(this.landslist);//OBJETO EN MEMORIA
+                this.Lands = new ObservableCollection<RootObjectItemViewModel>(this.ToRootObjectItemViewModel());//OBJETO EN MEMORIA
             }
             else
             {
-                this.Lands = new ObservableCollection<RootObject>(this.landslist.Where(
+                this.Lands = new ObservableCollection<RootObjectItemViewModel>(this.ToRootObjectItemViewModel().Where(
                     l => l.Name.ToLower().Contains(this.Filter.ToLower()) ||
                          l.Capital.ToLower().Contains(this.Filter.ToLower())
                 ));//para busqueda LINQ

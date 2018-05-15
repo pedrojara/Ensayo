@@ -14,6 +14,12 @@
             get;
             set;
         }
+
+        public LandViewModel Land //OBJETO PARA BINDING DESDE XAML
+        {
+            get;
+            set;
+        }
         #endregion
 
         #region Constructors

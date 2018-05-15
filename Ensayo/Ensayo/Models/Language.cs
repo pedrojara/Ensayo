@@ -1,7 +1,7 @@
 ﻿namespace Ensayo.Models
 {
     using Newtonsoft.Json;
-    class Language
+    public class Language
     {
         [JsonProperty(PropertyName = "iso639_1")]//Esta mapeo como esta en java
         public string Iso6391 { get; set; }

@@ -3,7 +3,7 @@
     using System;
     using Newtonsoft.Json;
 
-    class TokenResponse
+    public class TokenResponse
     {
         #region Properties
         [JsonProperty(PropertyName = "acces_token")]
